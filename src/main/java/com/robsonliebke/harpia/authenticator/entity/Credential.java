@@ -3,8 +3,6 @@
  */
 package com.robsonliebke.harpia.authenticator.entity;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * 
  * Class containing information used to authenticate actor.
@@ -13,10 +11,9 @@ import javax.validation.constraints.NotNull;
  *
  */
 public class Credential {
-	@NotNull
+
 	private String username;
-	
-	@NotNull
+
 	private String password;
 
 	public Credential(String username, String password) {
