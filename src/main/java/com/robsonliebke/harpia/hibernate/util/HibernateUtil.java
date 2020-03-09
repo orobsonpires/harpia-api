@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.junit.runner.notification.RunListener.ThreadSafe;
 
 import static org.hibernate.cfg.Environment.DRIVER;
 import static org.hibernate.cfg.Environment.URL;
@@ -29,46 +30,63 @@ import com.robsonliebke.harpia.users.entity.User;
  * @author robsonliebke
  *
  */
+@ThreadSafe
 public class HibernateUtil {
-	private static volatile SessionFactory sessionFactory; // NOSONAR
-	private static final Object mutex = new Object();
 	private static final Logger logger = LogManager.getLogger(HibernateUtil.class);
 
 	private HibernateUtil() {
 	}
 
-	public static SessionFactory getSessionFactory() {
-		SessionFactory sessionFactoryLocal = sessionFactory;
+	/**
+	 * @return singleton instance of {@link SessionFactory}
+	 */
+	public static SessionFactory getSessionFactoryInstance() {
+		return LazyHolder.sessionFactory;
+	}
 
-		if (sessionFactoryLocal != null) {
-			return sessionFactoryLocal;
-		}
+	/**
+	 * 
+	 * 
+	 * Initialization on demand holder, a way to initialize singleton objects that
+	 * enables a safe, highly concurrent lazy initialization of static fields with
+	 * good performance.
+	 * 
+	 * @see https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+	 *      https://rules.sonarsource.com/java/tag/multi-threading/RSPEC-2168
+	 *      https://stackoverflow.com/questions/1625118/java-double-checked-locking
+	 *      http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
+	 *
+	 */
+	private static class LazyHolder {
+		private static final SessionFactory sessionFactory = initializeInstance(); // This will be lazily initialized
 
-		synchronized (mutex) { // NOSONAR
-			if (sessionFactory == null) {
-				try {
-					final Configuration configuration = new Configuration();
+		private static SessionFactory initializeInstance() {
+			SessionFactory sessionFactory = null;
 
-					Properties settings = new Properties();
-					settings.put(DRIVER, "oracle.jdbc.OracleDriver");
-					settings.put(URL, "jdbc:oracle:thin:@localhost:1521:xe");
-					settings.put(USER, "harpia");
-					settings.put(PASS, "admin");
-					settings.put(DIALECT, "org.hibernate.dialect.OracleDialect");
-					settings.put(SHOW_SQL, "true");
-					settings.put(CURRENT_SESSION_CONTEXT_CLASS, "thread");
-					settings.put(HBM2DDL_AUTO, "create-drop");
-					configuration.setProperties(settings);
-					configuration.addAnnotatedClass(User.class);
-					ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-							.applySettings(configuration.getProperties()).build();
-					sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-				} catch (HibernateException e) {
-					logger.error("The session factory could not be initialized.");
-				}
+			try {
+				final Configuration configuration = new Configuration();
+
+				final Properties settings = new Properties();
+				settings.put(DRIVER, "oracle.jdbc.OracleDriver");
+				settings.put(URL, "jdbc:oracle:thin:@localhost:1521:xe");
+				settings.put(USER, "harpia");
+				settings.put(PASS, "admin");
+				settings.put(DIALECT, "org.hibernate.dialect.OracleDialect");
+				settings.put(SHOW_SQL, "true");
+				settings.put(CURRENT_SESSION_CONTEXT_CLASS, "thread");
+				settings.put(HBM2DDL_AUTO, "create-drop");
+				configuration.setProperties(settings);
+				configuration.addAnnotatedClass(User.class);
+				ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+						.applySettings(configuration.getProperties()).build();
+
+				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			} catch (HibernateException e) {
+				logger.error("The session factory could not be initialized.");
 			}
 
 			return sessionFactory;
 		}
+
 	}
 }
