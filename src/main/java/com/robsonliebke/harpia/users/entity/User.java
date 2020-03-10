@@ -3,13 +3,14 @@ package com.robsonliebke.harpia.users.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author robsonliebke
- *
  */
 @Entity
+@Table(name = "HARPIA_USER")
 public class User {
 	@Id
 	@GeneratedValue
