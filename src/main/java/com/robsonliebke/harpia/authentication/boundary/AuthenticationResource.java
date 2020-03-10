@@ -57,11 +57,8 @@ public class AuthenticationResource {
 				throw new ApplicationException(Status.NOT_FOUND,
 						"Incorrect username or password. Ensure that the username and password included in the request are correct.");
 			}
-
 			logger.info("The user '{}' was sucessfully authenticated.", user.getUsername());
-		}
-
-		catch (NoResultException e) {
+		} catch (Exception e) {
 			throw new ApplicationException(Status.INTERNAL_SERVER_ERROR, "Something went wrong.", e);
 		}
 
