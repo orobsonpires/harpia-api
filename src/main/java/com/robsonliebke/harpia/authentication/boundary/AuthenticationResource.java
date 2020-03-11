@@ -12,8 +12,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.robsonliebke.harpia.exceptions.ApplicationException;
 import com.robsonliebke.harpia.users.boundary.UsersService;
 import com.robsonliebke.harpia.users.entity.User;
 
@@ -46,8 +44,9 @@ public class AuthenticationResource {
 		final User user = this.userService.getUserByUsernameAndPassword(username, password);
 
 		if (user == null) {
-			throw new ApplicationException(Status.NOT_FOUND,
-					"Incorrect username or password. Ensure that the username and password included in the request are correct.");
+			return Response.status(Status.NOT_FOUND).entity(
+					"Incorrect username or password. Ensure that the username and password included in the request are correct.")
+					.build();
 		}
 
 		logger.info("The user '{}' was sucessfully authenticated.", user.getUsername());

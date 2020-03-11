@@ -2,9 +2,12 @@ package com.robsonliebke.harpia.users.boundary;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.robsonliebke.harpia.exceptions.ApplicationException;
 import com.robsonliebke.harpia.users.control.UsersStore;
 import com.robsonliebke.harpia.users.entity.User;
 
@@ -25,6 +28,10 @@ public class UsersService {
 	}
 
 	public User getUserByUsernameAndPassword(String username, String password) {
-		return this.usersStore.getUserByUsernameAndPassword(username, password);
+		try {
+			return this.usersStore.getUserByUsernameAndPassword(username, password);
+		} catch (Exception e) {
+			throw new ApplicationException(Status.INTERNAL_SERVER_ERROR, "Ops! Something went wrong.", e);
+		}
 	}
 }
