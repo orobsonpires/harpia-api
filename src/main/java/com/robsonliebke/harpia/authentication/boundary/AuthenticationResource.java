@@ -1,7 +1,6 @@
 package com.robsonliebke.harpia.authentication.boundary;
 
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -14,7 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.robsonliebke.harpia.exception.ApplicationException;
+import com.robsonliebke.harpia.exceptions.ApplicationException;
 import com.robsonliebke.harpia.users.boundary.UsersService;
 import com.robsonliebke.harpia.users.entity.User;
 
@@ -44,23 +43,16 @@ public class AuthenticationResource {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Required parameter is missing.").build();
 		}
 
-		this.authenticate(username, password);
+		final User user = this.userService.getUserByUsernameAndPassword(username, password);
+
+		if (user == null) {
+			throw new ApplicationException(Status.NOT_FOUND,
+					"Incorrect username or password. Ensure that the username and password included in the request are correct.");
+		}
+
+		logger.info("The user '{}' was sucessfully authenticated.", user.getUsername());
 
 		return Response.ok().build();
 	}
 
-	private void authenticate(String username, String password) {
-		try {
-			final User user = this.userService.getUserByUsernameAndPassword(username, password);
-
-			if (user == null) {
-				throw new ApplicationException(Status.NOT_FOUND,
-						"Incorrect username or password. Ensure that the username and password included in the request are correct.");
-			}
-			logger.info("The user '{}' was sucessfully authenticated.", user.getUsername());
-		} catch (Exception e) {
-			throw new ApplicationException(Status.INTERNAL_SERVER_ERROR, "Something went wrong.", e);
-		}
-
-	}
 }

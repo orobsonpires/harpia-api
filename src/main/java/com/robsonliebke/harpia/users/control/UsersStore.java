@@ -3,6 +3,8 @@ package com.robsonliebke.harpia.users.control;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.validation.constraints.Null;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.robsonliebke.harpia.users.entity.User;
@@ -10,10 +12,19 @@ import com.robsonliebke.harpia.util.HibernateUtil;
 
 /**
  * @author robsonliebke
- *
  */
 @Stateless
 public class UsersStore {
+
+	/**
+	 * Queries {@link User} by username and password, and return single user if
+	 * parameters match.
+	 * 
+	 * @param username
+	 * @param password
+	 * 
+	 * @return single user in case parameters match, otherwise {@link Null}.
+	 */
 	public User getUserByUsernameAndPassword(String username, String password) {
 		if (username == null || password == null) {
 			return null;

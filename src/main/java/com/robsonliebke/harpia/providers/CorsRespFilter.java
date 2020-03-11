@@ -16,7 +16,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
  * mechanism allows servers to publish the set of origins that are allowed for
  * making web browser request to it.
  * 
- * This provider is define to add the Access-Control headers to the response.
+ * This provider is defined to add the Access-Control headers to the response.
  * 
  * @author robsonliebke
  *

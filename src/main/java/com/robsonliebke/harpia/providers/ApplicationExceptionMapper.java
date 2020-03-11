@@ -1,8 +1,10 @@
-package com.robsonliebke.harpia.exception;
+package com.robsonliebke.harpia.providers;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import com.robsonliebke.harpia.exceptions.ApplicationException;
 
 @Provider
 public class ApplicationExceptionMapper implements ExceptionMapper<ApplicationException> {

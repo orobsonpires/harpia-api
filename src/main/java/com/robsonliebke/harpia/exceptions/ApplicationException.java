@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.robsonliebke.harpia.exception;
+package com.robsonliebke.harpia.exceptions;
 
 import javax.ws.rs.core.Response.Status;
 
