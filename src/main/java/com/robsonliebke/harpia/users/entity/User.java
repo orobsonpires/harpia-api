@@ -1,6 +1,12 @@
 package com.robsonliebke.harpia.users.entity;
 
+import java.util.Set;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @author robsonliebke
  */
 @Entity
-@Table(name = "HARPIA_USER")
+@Table(name = "harpia_user")
 public class User {
 	@Id
 	@GeneratedValue
@@ -20,10 +26,17 @@ public class User {
 	@NotNull
 	private String password;
 
-	public User(String username, String password) {
+	@NotNull
+	@ElementCollection(targetClass = Role.class)
+	@Enumerated(EnumType.STRING)
+	@CollectionTable(name = "security_role")
+	private Set<Role> roles;
+
+	public User(String username, String password, Set<Role> roles) {
 		super();
 		this.username = username;
 		this.password = password;
+		this.roles = roles;
 	}
 
 	public String getUsername() {
@@ -41,4 +54,13 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
 }
