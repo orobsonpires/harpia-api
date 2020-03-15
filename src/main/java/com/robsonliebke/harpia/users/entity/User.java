@@ -7,12 +7,15 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Persistence entity that represents a user.
+ * 
  * @author robsonliebke
  */
 @Entity
@@ -27,14 +30,10 @@ public class User {
 	private String password;
 
 	@NotNull
-	@ElementCollection(targetClass = Role.class)
+	@ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	@CollectionTable(name = "security_role")
 	private Set<Role> roles;
-
-	// https://github.com/wildfly/quickstart/blob/master/jaxrs-jwt/service/src/main/java/org/jboss/quickstarts/jaxrsjwt/user/User.java
-	// https://github.com/OpenLiberty/sample-async-rest/tree/master/src/main/java/io/openliberty/sample/async/rest/client/jaxrs21
-	// https://github.com/hantsy/javaee8-jaxrs-sample/tree/master/backend/src/main/java/com/github/hantsy/ee8sample/security
 
 	public User(String username, String password, Set<Role> roles) {
 		super();
@@ -71,4 +70,16 @@ public class User {
 		this.roles = roles;
 	}
 
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return username != null ? username.equals(user.username) : user.username == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
+    }
 }
