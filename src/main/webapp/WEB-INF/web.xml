@@ -4,4 +4,11 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	id="WebApp_ID" version="4.0">
 	<display-name>harpia-api</display-name>
+	<data-source>
+		<name>java:global/datasource</name>
+		<class-name>oracle.jdbc.OracleDriver</class-name>
+		<url>jdbc:oracle:thin:@localhost:1521:mint</url>
+		<user>harpia</user>
+		<password>admin</password>
+	</data-source>
 </web-app>
