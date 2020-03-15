@@ -1,11 +1,8 @@
 package com.robsonliebke.harpia.users.control;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.validation.constraints.Null;
 import com.robsonliebke.harpia.users.entity.User;
 
@@ -32,19 +29,8 @@ public class UsersStore {
 			return null;
 		}
 
-		final TypedQuery<User> query = em
-				.createQuery("FROM User u WHERE u.username = :username AND u.username = :password", User.class);
-
-		query.setParameter("username", username);
-		query.setParameter("password", password);
-
-		final List<User> users = query.getResultList();
-
-		if (!users.isEmpty()) {
-			return users.get(0);
-		}
-
-		return null;
-
+		return em.createQuery("FROM User u WHERE u.username = :username AND u.username = :password", User.class)
+				.setParameter("username", username).setParameter("password", password).getResultStream().findAny()
+				.orElse(null);
 	}
 }
