@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @author robsonliebke
  */
 @Entity
-@Table(name = "harpia_user")
+@Table(name = "HARPIA_USER")
 public class User {
 	@Id
 	@GeneratedValue
@@ -32,11 +32,19 @@ public class User {
 	@CollectionTable(name = "security_role")
 	private Set<Role> roles;
 
+	// https://github.com/wildfly/quickstart/blob/master/jaxrs-jwt/service/src/main/java/org/jboss/quickstarts/jaxrsjwt/user/User.java
+	// https://github.com/OpenLiberty/sample-async-rest/tree/master/src/main/java/io/openliberty/sample/async/rest/client/jaxrs21
+	// https://github.com/hantsy/javaee8-jaxrs-sample/tree/master/backend/src/main/java/com/github/hantsy/ee8sample/security
+
 	public User(String username, String password, Set<Role> roles) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.roles = roles;
+	}
+
+	public User() {
+
 	}
 
 	public String getUsername() {
