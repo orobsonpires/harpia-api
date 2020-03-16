@@ -1,4 +1,4 @@
-package com.robsonliebke.harpia.authentication.control;
+package com.robsonliebke.harpia.authentication.entity;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import com.robsonliebke.harpia.configuration.Configurable;
  *
  */
 @Dependent
-class AuthenticationTokenSettings {
+public class AuthenticationTokenSettings {
 
 	/**
 	 * Secret for signing and verifying the token signature.

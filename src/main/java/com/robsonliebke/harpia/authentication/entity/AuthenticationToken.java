@@ -13,6 +13,11 @@ package com.robsonliebke.harpia.authentication.entity;
 public class AuthenticationToken {
 	private String token;
 
+	public AuthenticationToken(String token) {
+		super();
+		this.token = token;
+	}
+
 	public AuthenticationToken() {
 		super();
 	}

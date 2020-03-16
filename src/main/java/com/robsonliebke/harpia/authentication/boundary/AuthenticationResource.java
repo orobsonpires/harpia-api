@@ -19,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.robsonliebke.harpia.authentication.entity.AuthenticationToken;
+import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenDetails;
+import com.robsonliebke.harpia.authentication.entity.TokenBasedSecurityContext;
 import com.robsonliebke.harpia.users.boundary.UsersService;
 import com.robsonliebke.harpia.users.entity.User;
 
@@ -71,11 +73,22 @@ public class AuthenticationResource {
 		 * When we get this point means the user was successfully authenticated using
 		 * their credentials, therefore a JSON Web Token will be returned.
 		 */
-		final String token = this.authenticationTokenService.issueToken(user.getUsername(), user.getRoles());
-		final AuthenticationToken authenticationToken = new AuthenticationToken();
-		authenticationToken.setToken(token);
+		return Response.ok(new AuthenticationToken(
+				this.authenticationTokenService.issueToken(user.getUsername(), user.getRoles()))).build();
+	}
 
-		return Response.ok(authenticationToken).build();
+	/**
+	 * Refresh the authentication token for the current user.
+	 *
+	 * @return new JWT token.
+	 */
+	@POST
+	@Path("refresh")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response refresh() {
+		final AuthenticationTokenDetails tokenDetails = ((TokenBasedSecurityContext) securityContext)
+				.getAuthenticationTokenDetails();
+		return Response.ok(new AuthenticationToken(authenticationTokenService.refreshToken(tokenDetails))).build();
 	}
 
 }

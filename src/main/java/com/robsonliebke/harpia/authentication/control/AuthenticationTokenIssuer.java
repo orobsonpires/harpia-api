@@ -1,6 +1,8 @@
 package com.robsonliebke.harpia.authentication.control;
 
 import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenDetails;
+import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenSettings;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 

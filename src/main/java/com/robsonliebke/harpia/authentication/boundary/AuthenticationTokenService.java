@@ -9,11 +9,13 @@ import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response.Status;
 
 import com.robsonliebke.harpia.authentication.control.AuthenticationTokenIssuer;
 import com.robsonliebke.harpia.authentication.control.AuthenticationTokenParser;
 import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenDetails;
 import com.robsonliebke.harpia.configuration.Configurable;
+import com.robsonliebke.harpia.exceptions.ApplicationException;
 import com.robsonliebke.harpia.users.entity.Role;
 
 /**
@@ -79,6 +81,30 @@ public class AuthenticationTokenService {
 				.withExpirationDate(expirationDate).withRefreshCount(0).withRefreshLimit(refreshLimit).build();
 
 		return tokenIssuer.issueToken(authenticationTokenDetails);
+	}
+
+	/**
+	 * Refresh a token.
+	 *
+	 * @param currentTokenDetails
+	 * @return {@link String} representing refreshed JSON Web Token.
+	 */
+	public String refreshToken(final AuthenticationTokenDetails currentTokenDetails) {
+
+		if (!currentTokenDetails.isEligibleForRefreshment()) {
+			throw new ApplicationException(Status.UNAUTHORIZED, "This token cannot be refreshed");
+		}
+
+		final ZonedDateTime issuedDate = ZonedDateTime.now();
+		final ZonedDateTime expirationDate = calculateExpirationDate(issuedDate);
+
+		final AuthenticationTokenDetails newTokenDetails = new AuthenticationTokenDetails.Builder()
+				.withId(currentTokenDetails.getId()) // Reuse the same id
+				.withUsername(currentTokenDetails.getUsername()).withRoles(currentTokenDetails.getRoles())
+				.withIssuedDate(issuedDate).withExpirationDate(expirationDate)
+				.withRefreshCount(currentTokenDetails.getRefreshCount() + 1).withRefreshLimit(refreshLimit).build();
+
+		return tokenIssuer.issueToken(newTokenDetails);
 	}
 
 	/**

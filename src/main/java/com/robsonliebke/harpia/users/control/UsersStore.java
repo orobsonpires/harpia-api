@@ -33,4 +33,20 @@ public class UsersStore {
 				.setParameter("username", username).setParameter("password", password).getResultStream().findAny()
 				.orElse(null);
 	}
+
+	/**
+	 * Queries {@link User} by username, and return single user if parameter match.
+	 * 
+	 * @param username
+	 * 
+	 * @return single user in case parameter match, otherwise {@link Null}.
+	 */
+	public User getUserByUserName(String username) {
+		if (username == null) {
+			return null;
+		}
+
+		return em.createQuery("FROM User u WHERE u.username = :username", User.class).setParameter("username", username)
+				.getResultStream().findAny().orElse(null);
+	}
 }

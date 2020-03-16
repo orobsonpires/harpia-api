@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response.Status;
 
 import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenDetails;
+import com.robsonliebke.harpia.authentication.entity.AuthenticationTokenSettings;
 import com.robsonliebke.harpia.exceptions.ApplicationException;
 import com.robsonliebke.harpia.users.entity.Role;
 

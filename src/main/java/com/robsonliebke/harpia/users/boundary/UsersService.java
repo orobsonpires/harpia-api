@@ -34,4 +34,12 @@ public class UsersService {
 			throw new ApplicationException(Status.INTERNAL_SERVER_ERROR, "Ops! Something went wrong.", e);
 		}
 	}
+
+	public User findByUserName(String username) {
+		try {
+			return this.usersStore.getUserByUserName(username);
+		} catch (Exception e) {
+			throw new ApplicationException(Status.INTERNAL_SERVER_ERROR, "Ops! Something went wrong.", e);
+		}
+	}
 }
